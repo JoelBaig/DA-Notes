@@ -16,7 +16,7 @@ export class AddNoteDialogComponent {
   title = "";
   description = "";
 
-  constructor(public noteService: NoteListService){}
+  constructor(private noteService: NoteListService){}
 
   closeDialog() {
     this.title = "";
