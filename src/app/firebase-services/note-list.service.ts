@@ -20,14 +20,14 @@ export class NoteListService {
     this.unsubTrash = this.subTrashList();
   }
 
-  async deleteNote(colId: string, docId: string) {
+  async deleteNote(colId: 'notes' | 'trash', docId: string) {
     await deleteDoc(this.getSingleDocRef(colId, docId)).catch(
       (err) => { console.log(err) }
     );
   }
 
   async updateNote(note: Note) {
-    let docRef = this.getSingleDocRef(this.getColIdFromNote(note), note.id);
+    let docRef = this.getSingleDocRef(this.getColIdFromNote(note), note.type);
     if (note.id) {
       await updateDoc(docRef, this.getCleanJson(note)).catch(
         (err) => { console.log(err); }
@@ -52,7 +52,7 @@ export class NoteListService {
     }
   }
 
-  async addNote(item: {}) {
+  async addNote(item: Note, colId: 'notes' | 'trash') {
     await addDoc(this.getNotesRef(), item).catch(
       (err) => { console.error(err) }
     ).then(
