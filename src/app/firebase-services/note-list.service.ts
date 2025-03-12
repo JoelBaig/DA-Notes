@@ -56,8 +56,10 @@ export class NoteListService {
     console.log("Speichere Notiz in:", colId, "mit Inhalt:", item);
     if (item.type === 'trash') {
       colId = 'trash';
-    } else {
+      this.trashNotes.push(item);
+    } else if (item.type === 'note') {
       colId = 'notes';
+      this.normalNotes.push(item);
     }
 
     await addDoc(this.getNotesRef(), item).catch(
@@ -73,7 +75,7 @@ export class NoteListService {
   //   } else {
   //     colId = 'notes';
   //   }
-  
+
   //   await addDoc(collection(this.firestore, colId), item)
   //     .then((docRef) => {
   //       console.log("Document written with ID:", docRef.id);
