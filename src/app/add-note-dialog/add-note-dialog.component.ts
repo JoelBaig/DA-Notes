@@ -24,7 +24,27 @@ export class AddNoteDialogComponent {
     this.addDialogClosed.emit(false);
   }
 
-  addNote(){
+  addNote() {
+    console.log("📌 addNote() in AddNoteDialogComponent aufgerufen mit Titel:", this.title, "und Beschreibung:", this.description);
+
+    if (!this.title.trim() || !this.description.trim()) {
+      console.error("❌ Fehler: Titel oder Beschreibung fehlt!");
+      return;
+    }
+
+    // Erstelle eine neue Notiz basierend auf der Eingabe
+    const newNote: Note = {
+      title: this.title,
+      content: this.description,
+      marked: false,
+      type: 'note', // Standardmäßig wird die Notiz in "notes" gespeichert
+    };
+
+    // Aufruf der `addNote()`-Methode in `NoteListService`
+    this.noteService.addNote(newNote, 'notes');
+
+    // Dialog schließen
     this.closeDialog();
   }
 }
+
