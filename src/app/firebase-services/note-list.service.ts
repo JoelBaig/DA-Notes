@@ -7,16 +7,19 @@ import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, q
 })
 export class NoteListService {
 
-  trashNotes: Note[] = [];
   normalNotes: Note[] = [];
+  normalMarkedNotes: Note[] = [];
+  trashNotes: Note[] = [];
 
   unsubNotes;
+  unsubMarkedNotes;
   unsubTrash;
 
   firestore: Firestore = inject(Firestore);
 
   constructor() {
     this.unsubNotes = this.subNotesList();
+    this.unsubMarkedNotes = this.subMarkedNotesList();
     this.unsubTrash = this.subTrashList();
   }
 
@@ -76,6 +79,7 @@ export class NoteListService {
 
   ngonDestroy() {
     this.unsubNotes();
+    this.unsubMarkedNotes();
     this.unsubTrash();
   }
 
@@ -89,10 +93,10 @@ export class NoteListService {
     });
   }
 
-  subMtrueNotesList() {
+  subMarkedNotesList() {
     const q = query(this.getNotesRef(), where('marked', '==', true), limit(100));
     return onSnapshot(q, (list) => {
-      this.normalNotes = [];
+      this.normalMarkedNotes = [];
       list.forEach(element => {
         this.normalNotes.push(this.setNoteObject(element.data(), element.id));
       });
