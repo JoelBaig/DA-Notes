@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Note } from '../interfaces/note.interface';
-import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, query, where, limit, orderBy } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -52,37 +52,27 @@ export class NoteListService {
     }
   }
 
-  // async addNote(item: Note, colId: 'notes' | 'trash') {
-  //   await addDoc(this.getNotesRef(), item).catch(
-  //     (err) => { console.error(err) }
-  //   ).then(
-  //     (docRef) => { console.log("Document written with ID: ", docRef?.id); }
-  //   )
-  // }
-
   async addNote(item: Note, colId: 'notes' | 'trash') {
-    console.log("📌 Speichere Notiz in:", colId, "mit Inhalt:", item);
-
     let colRef;
 
     if (item.type === 'trash') {
-        colId = 'trash';
-        colRef = this.getTrashRef();
-        this.trashNotes.push(item);
+      colId = 'trash';
+      colRef = this.getTrashRef();
+      this.trashNotes.push(item);
     } else {
-        colId = 'notes';
-        colRef = this.getNotesRef();
-        this.normalNotes.push(item);
+      colId = 'notes';
+      colRef = this.getNotesRef();
+      this.normalNotes.push(item);
     }
 
     try {
-        const docRef = await addDoc(colRef, item);
-        console.log("✅ Notiz erfolgreich gespeichert mit ID:", docRef.id);
-        item.id = docRef.id; // Speichert die Firestore-ID im Notiz-Objekt
+      const docRef = await addDoc(colRef, item);
+      console.log('Notiz erfolgreich gespeichert mit ID:', docRef.id);
+      item.id = docRef.id;
     } catch (err) {
-        console.error("❌ Fehler beim Speichern der Notiz:", err);
+      console.error('Fehler beim Speichern der Notiz:', err);
     }
-}
+  }
 
   ngonDestroy() {
     this.unsubNotes();
@@ -90,7 +80,8 @@ export class NoteListService {
   }
 
   subNotesList() {
-    return onSnapshot(this.getNotesRef(), (list) => {
+    const q = query(this.getNotesRef(), where('state', '==', 'CA'), orderBy('state'), limit(100));
+    return onSnapshot(q, (list) => {
       this.normalNotes = [];
       list.forEach(element => {
         this.normalNotes.push(this.setNoteObject(element.data(), element.id));

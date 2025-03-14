@@ -13,10 +13,10 @@ import { FormsModule } from '@angular/forms';
 })
 export class AddNoteDialogComponent {
   @Output() addDialogClosed: EventEmitter<boolean> = new EventEmitter();
-  title = "";
-  description = "";
+  title = '';
+  description = '';
 
-  constructor(private noteService: NoteListService){}
+  constructor(private noteService: NoteListService) { }
 
   closeDialog() {
     this.title = "";
@@ -25,25 +25,19 @@ export class AddNoteDialogComponent {
   }
 
   addNote() {
-    console.log("📌 addNote() in AddNoteDialogComponent aufgerufen mit Titel:", this.title, "und Beschreibung:", this.description);
-
     if (!this.title.trim() || !this.description.trim()) {
-      console.error("❌ Fehler: Titel oder Beschreibung fehlt!");
+      console.error('Fehler: Titel oder Beschreibung fehlt!');
       return;
     }
 
-    // Erstelle eine neue Notiz basierend auf der Eingabe
     const newNote: Note = {
       title: this.title,
       content: this.description,
       marked: false,
-      type: 'note', // Standardmäßig wird die Notiz in "notes" gespeichert
+      type: 'note',
     };
 
-    // Aufruf der `addNote()`-Methode in `NoteListService`
     this.noteService.addNote(newNote, 'notes');
-
-    // Dialog schließen
     this.closeDialog();
   }
 }
