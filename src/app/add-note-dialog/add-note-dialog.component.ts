@@ -26,7 +26,6 @@ export class AddNoteDialogComponent {
 
   addNote() {
     if (!this.title.trim() || !this.description.trim()) {
-      console.error('Fehler: Titel oder Beschreibung fehlt!');
       return;
     }
 

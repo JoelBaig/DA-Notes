@@ -98,7 +98,7 @@ export class NoteListService {
     return onSnapshot(q, (list) => {
       this.normalMarkedNotes = [];
       list.forEach(element => {
-        this.normalNotes.push(this.setNoteObject(element.data(), element.id));
+        this.normalMarkedNotes.push(this.setNoteObject(element.data(), element.id));
       });
     });
   }
