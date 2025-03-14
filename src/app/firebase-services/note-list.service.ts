@@ -80,7 +80,17 @@ export class NoteListService {
   }
 
   subNotesList() {
-    const q = query(this.getNotesRef(), where('state', '==', 'CA'), orderBy('state'), limit(100));
+    const q = query(this.getNotesRef(), limit(100));
+    return onSnapshot(q, (list) => {
+      this.normalNotes = [];
+      list.forEach(element => {
+        this.normalNotes.push(this.setNoteObject(element.data(), element.id));
+      });
+    });
+  }
+
+  subMtrueNotesList() {
+    const q = query(this.getNotesRef(), where('marked', '==', true), limit(100));
     return onSnapshot(q, (list) => {
       this.normalNotes = [];
       list.forEach(element => {
